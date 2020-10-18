@@ -1,5 +1,6 @@
 .vscode
 bulma
 node_modules
+.DS_Store
 
 memo.md

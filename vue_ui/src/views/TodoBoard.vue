@@ -1,26 +1,47 @@
 <template>
-<div class="bl_todoBoard_wrapper">
-    <header>
-        <h3>ボードリスト<a href="">ボードを追加する</a></h3>
-    </header>
-    <div class="content_wrapper">
-        <div class="boards">
-            <div class="board" v-for="(board, index) in boards" :key="index">
-                <h3>
-                    <a href="">{{ board.title }}</a>
-                </h3>
-                <div class="addcard">
-                    <a href="">カードを追加する</a>
+<div class="un_todoBoard_wrapper">
+    <header class="bl_header">
+        <nav class="navbar is-info">
+            <div class="navbar-brand">
+                <div class="navbar-item has-text-weight-bold">ボードリスト</div>
+                <div class="navbar-item">
+                    <a class="tag mr-2" @click="addBoard()">+ボードを追加</a>
+                    <input type="text" v-model="nextBoardTitle">
                 </div>
-                <ul class="cards sortable" id="sortable-<?=$board->id?>">
-                    <li class="card draggable" v-for="(card, index) in board.cards" :key="index">
-                        <span>{{ card.title }}</span>
-                        <a href="">
-                            <i class="fas fa-times"></i>
-                        </a>
-                        <a href="">
-                            <i class="fas fa-edit"></i>
-                        </a>
+            </div>
+        </nav>
+    </header>
+    <div class="ly_cont">
+        <div class="bl_boardUnit is-flex p-4">
+            <div class="bl_board p-2" v-for="(board, bIndex) in boards" :key="bIndex">
+                <div class="bl_board_header mb-4">
+                    <div>
+                        <p class="title">{{ board.title }}</p>
+                    </div>
+                    <div>
+                        <a class="tag" @click="addCard(bIndex)">+カードを追加</a>
+                        <input type="text" v-model="board.nextCardTitle">
+                    </div>
+                </div>
+                <!-- .tile.is-child margin-bottom: 1.5rem if not last child -->
+                <ul class="bl_cardUnit tile is-vertical sortable">
+                    <li class="tile is-child draggable" v-for="(card, cIndex) in board.cards" :key="cIndex">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-header-title">
+                                    <input type="text" v-if="card.isEditMode" v-model="card.title" @focusout="card.isEditMode = false">
+                                    <p v-else>{{ card.title }}</p>
+                                </div>
+                                <div class="card-header-icon">
+                                    <a class="mr-2" @click="deleteCard(bIndex, cIndex)">
+                                        <i class="fas fa-times"></i>
+                                    </a>
+                                    <a @click="turnOnCardEditMode(bIndex, cIndex)">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </li>
                 </ul>
             </div>
@@ -33,101 +54,99 @@
 export default {
     data() {
         return {
+            nextBoardTitle: '',
             boards: [{
-                title: 'aaa',
-                cards: [{
-                        title: 'aa'
-                    },
-                    {
-                        title: 'bb'
-                    },
-                ]
-            }]
+                    title: 'aaa',
+                    nextCardTitle: '',
+                    cards: [{
+                            title: 'aa'
+                        },
+                        {
+                            title: 'bb'
+                        }, {
+                            title: 'aa'
+                        },
+                        {
+                            title: 'bb'
+                        }, {
+                            title: 'aa'
+                        },
+                        {
+                            title: 'bb'
+                        }, {
+                            title: 'aa'
+                        },
+                        {
+                            title: 'bb'
+                        },
+                    ]
+                },
+                {
+                    title: 'aaa',
+                    cards: [{
+                            title: 'aa'
+                        },
+                        {
+                            title: 'bb'
+                        },
+                    ]
+                },
+            ]
         };
-    }
+    },
+    methods: {
+        addBoard() {
+            if (this.nextBoardTitle !== '') {
+                this.boards.unshift({
+                    title: this.nextBoardTitle,
+                    cards: []
+                })
+            }
+        },
+        addCard(index) {
+            const board = this.boards[index]
+            if (board.nextCardTitle !== '') {
+                board.cards.unshift({
+                    title: board.nextCardTitle
+                })
+                board.nextCardTitle = ''
+            }
+        },
+        deleteCard(bIndex, cIndex) {
+            this.boards[bIndex].cards.splice(cIndex, 1)
+        },
+        turnOnCardEditMode(bIndex, cIndex) {
+            console.log(event.target)
+            this.boards[bIndex].cards[cIndex].isEditMode = true
+            // 直ぐにはDOMがレンダリングされないため、このようにして待った
+            const targetParent = event.target.parentNode.parentNode.parentNode
+            setTimeout(() => {
+                targetParent.querySelector('input').focus()
+            }, 100)
+        },
+    },
 }
 </script>
 
 <style lang="scss">
-.bl_todoBoard_wrapper {
-    a {
-        text-decoration: none;
-        color: #172b4d;
-    }
-
-    header {
-        height: 40px;
-        background-color: rgb(126, 199, 223);
-        padding: 10px;
-    }
-
-    header h3 {
-        color: #ebecf0;
-    }
-
-    .content_wrapper {
-        height: calc(100% - 60px);
+.un_todoBoard_wrapper {
+    .ly_cont {
         background-color: rgb(173, 215, 230);
-    }
-
-    .boards {
-        margin: 0 10px;
-        padding: 10px 0 20px;
-        height: calc(100% - 30px);
-        display: flex;
-        flex-wrap: nowrap;
+        height: calc(100vh - 52px);
+        width: 100vw;
         overflow-x: scroll;
-        /* white-space: nowrap; */
     }
 
-    .board {
-        display: flex;
-        flex-direction: column;
+    .bl_boardUnit .bl_board:not(:last-child) {
+        margin-right: 1rem;
+    }
 
+    .bl_board {
         background-color: #ebecf0;
-        width: 272px;
-        height: calc(100% - 40px);
-        padding: 10px 0 10px;
-        margin: 0 10px 0 0;
-        white-space: initial;
-        /* デフォルトで縮む効果を向こうにできた */
-        flex-shrink: 0;
-    }
-
-    .board h3 {
-        color: #172b4d;
-        font-weight: 600;
-        margin: 0px 10px 8px;
-        font-size: 18px;
-        line-height: 22px;
-    }
-
-    .board .addcard {
-        margin: 0 10px 8px;
-    }
-
-    .cards {
-        /* 親要素をflexboxにしていることで、100%が残りの高さになる */
-        height: 100%;
+        // 100vh - header - padding
+        height: calc(100vh - 52px - 2rem);
+        min-width: 200px;
         overflow-y: scroll;
-        white-space: initial;
-    }
-
-    .card {
-        background-color: #fff;
-        margin: 10px;
-        padding: 5px;
-    }
-
-    .card .fa-edit,
-    .card .fa-times {
-        float: right;
-        margin-right: 5px;
-    }
-
-    .card .fa-edit:hover,
-    .card .fa-times {
-        cursor: pointer;
     }
 }
 </style>

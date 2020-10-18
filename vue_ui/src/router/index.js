@@ -1,6 +1,5 @@
 import { createWebHistory, createRouter } from "vue-router"
 import Home from "@/views/Home.vue"
-import About from "@/views/About.vue"
 import TodoBoard from "@/views/TodoBoard.vue"
 
 const routes = [

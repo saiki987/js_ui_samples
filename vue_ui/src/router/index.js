@@ -1,6 +1,7 @@
 import { createWebHistory, createRouter } from "vue-router"
 import Home from "@/views/Home.vue"
 import TodoBoard from "@/views/TodoBoard.vue"
+import Gomoku from "@/views/Gomoku.vue"
 
 const routes = [
     {
@@ -12,6 +13,11 @@ const routes = [
         path: '/todo_board',
         name: 'TodoBoard',
         component: TodoBoard,
+    },
+    {
+        path: '/gomoku',
+        name: 'Gomoku',
+        component: Gomoku,
     }
 ];
 

@@ -1,5 +1,6 @@
 .vscode
 bulma
+buefy
 node_modules
 .DS_Store
 

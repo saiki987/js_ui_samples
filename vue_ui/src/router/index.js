@@ -2,6 +2,7 @@ import { createWebHistory, createRouter } from "vue-router"
 import Home from "@/views/Home.vue"
 import TodoBoard from "@/views/TodoBoard.vue"
 import Gomoku from "@/views/Gomoku.vue"
+import LayoutEditor from "@/views/LayoutEditor.vue"
 
 const routes = [
     {
@@ -18,6 +19,11 @@ const routes = [
         path: '/gomoku',
         name: 'Gomoku',
         component: Gomoku,
+    },
+    {
+        path: '/layout_editor',
+        name: 'LayoutEditor',
+        component: LayoutEditor,
     }
 ];
 

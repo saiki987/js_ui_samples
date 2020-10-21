@@ -19,7 +19,7 @@
                         <p class="title">{{ board.title }}</p>
                     </div>
                     <div>
-                        <a class="tag" @click="addCard(bIndex)">+カードを追加</a>
+                        <a class="tag" @click="addCard(board)">+カードを追加</a>
                         <input type="text" v-model="board.nextCardTitle">
                     </div>
                 </div>
@@ -29,14 +29,17 @@
                         <div class="card">
                             <div class="card-header">
                                 <div class="card-header-title">
-                                    <input type="text" v-if="card.isEditMode" v-model="card.title" @focusout="card.isEditMode = false">
+                                    <input type="text"
+                                        v-if="card.isEditMode"
+                                        v-model="card.title"
+                                        @focusout="card.isEditMode = false">
                                     <p v-else>{{ card.title }}</p>
                                 </div>
                                 <div class="card-header-icon">
                                     <a class="mr-2" @click="deleteCard(bIndex, cIndex)">
                                         <i class="fas fa-times"></i>
                                     </a>
-                                    <a @click="turnOnCardEditMode(bIndex, cIndex)">
+                                    <a @click="turnOnCardEditMode(card)">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                 </div>
@@ -71,14 +74,6 @@ export default {
                         }, {
                             title: 'aa'
                         },
-                        {
-                            title: 'bb'
-                        }, {
-                            title: 'aa'
-                        },
-                        {
-                            title: 'bb'
-                        },
                     ]
                 },
                 {
@@ -102,9 +97,9 @@ export default {
                     cards: []
                 })
             }
+            this.nextBoardTitle = ''
         },
-        addCard(index) {
-            const board = this.boards[index]
+        addCard(board) {
             if (board.nextCardTitle !== '') {
                 board.cards.unshift({
                     title: board.nextCardTitle
@@ -115,14 +110,13 @@ export default {
         deleteCard(bIndex, cIndex) {
             this.boards[bIndex].cards.splice(cIndex, 1)
         },
-        turnOnCardEditMode(bIndex, cIndex) {
-            console.log(event.target)
-            this.boards[bIndex].cards[cIndex].isEditMode = true
-            // 直ぐにはDOMがレンダリングされないため、このようにして待った
-            const targetParent = event.target.parentNode.parentNode.parentNode
-            setTimeout(() => {
+        turnOnCardEditMode(card) {
+            card.isEditMode = true
+            // 再レンダリングが完了するまで、目的のinput要素は存在しないため、$nextTickを用いた
+            const targetParent = event.target.closest('.card-header')
+            this.$nextTick(() => {
                 targetParent.querySelector('input').focus()
-            }, 100)
+            })
         },
     },
 }

@@ -2,8 +2,8 @@
 <div class="un_layoutEditor_wrapper">
 <div class="ly_cont">
     <div class="bl_canvas_wrapper">
-        <canvas class="bl_canvas js_pdfCanvas"></canvas>
-        <div class="bl_draggableElems">
+        <canvas class="bl_canvas"></canvas>
+        <div class="un_draggableElems">
             <div
                 class="bl_textBox"
                 :class="{is_selected: box.index === boxIndex}"
@@ -48,59 +48,53 @@
                 @click="addBox()">追加</button>
         </div>
         <div class="bl_tool">
-            <form class="bl_tool_form" target="_preview_pdf" action="" method="GET">
-                <div class="bl_tool_items">
-                    <div class="bl_tool_item">
-                        <div class="is-size-4 has-text-weight-bold">
-                            {{ boxes[boxIndex].name }}
-                        </div>
-                        <div class="columns is-flex mb-0">
-                            <div class="column is-2">
-                                <label class="label">text</label>
-                            </div>
-                            <div class="column">
-                                <input type="text" v-model.lazy="boxes[boxIndex].text">
-                            </div>
-                        </div>
-                        <div class="columns is-flex mb-0">
-                            <div class="column is-3">
-                                <label class="label">x:</label>
-                            </div>
-                            <div class="column is-3">
-                                <input type="text"
-                                    class="hp_fullwidth"
-                                    v-model.lazy="boxes[boxIndex].x">
-                            </div>
-                            <div class="column is-3">
-                                <label class="label">y:</label>
-                            </div>
-                            <div class="column is-3">
-                                <input type="text"
-                                    class="hp_fullwidth"
-                                    v-model.lazy="boxes[boxIndex].y">
-                            </div>
-                        </div>
-                        <div class="columns is-flex mb-0">
-                            <div class="column is-3">
-                                <label class="label">width:</label>
-                            </div>
-                            <div class="column is-3">
-                                <input type="text"
-                                    class="hp_fullwidth"
-                                    v-model.lazy="boxes[boxIndex].width">
-                            </div>
-                            <div class="column is-3">
-                                <label class="label">height:</label>
-                            </div>
-                            <div class="column is-3">
-                                <input type="text"
-                                    class="hp_fullwidth"
-                                    v-model.lazy="boxes[boxIndex].height">
-                            </div>
-                        </div>
-                    </div>
+            <div class="title is-size-4">
+                {{ boxes[boxIndex].name }}
+            </div>
+            <div class="bl_tool_item">
+                <div class="column is-2">
+                    <label class="label">text</label>
                 </div>
-            </form>
+                <div class="column">
+                    <input type="text" v-model.lazy="boxes[boxIndex].text">
+                </div>
+            </div>
+            <div class="bl_tool_item">
+                <div class="column is-3">
+                    <label class="label">x:</label>
+                </div>
+                <div class="column is-3">
+                    <input type="text"
+                        class="hp_fullwidth"
+                        v-model.lazy="boxes[boxIndex].x">
+                </div>
+                <div class="column is-3">
+                    <label class="label">y:</label>
+                </div>
+                <div class="column is-3">
+                    <input type="text"
+                        class="hp_fullwidth"
+                        v-model.lazy="boxes[boxIndex].y">
+                </div>
+            </div>
+            <div class="bl_tool_item">
+                <div class="column is-3">
+                    <label class="label">width:</label>
+                </div>
+                <div class="column is-3">
+                    <input type="text"
+                        class="hp_fullwidth"
+                        v-model.lazy="boxes[boxIndex].width">
+                </div>
+                <div class="column is-3">
+                    <label class="label">height:</label>
+                </div>
+                <div class="column is-3">
+                    <input type="text"
+                        class="hp_fullwidth"
+                        v-model.lazy="boxes[boxIndex].height">
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -167,17 +161,18 @@ export default {
             }
         },
         waitDrag(box) {
-            if (box.index === this.boxIndex) {
-                box.isDraggable = true
-                box.clientX = event.clientX
-                box.clientY = event.clientY
-            }
+            this.boxIndex = box.index
+            box.isDraggable = true
+            box.clientX = event.clientX
+            box.clientY = event.clientY
         },
         endDrag(box) {
             box.isDraggable = false
         },
         waitResize(box, directionName) {
             box.isResizable = true
+            box.clientX = event.clientX
+            box.clientY = event.clientY
             if (directionName === 'R') {
                 box.isResizingR = true
             }
@@ -225,19 +220,10 @@ export default {
     .hp_fullwidth {
         width: 100%;
     }
+
     .ly_cont {
         display: flex;
         padding: 3rem 1.5rem;
-    }
-    .bl_tool_wrapper {
-        margin-left: 3rem;
-        flex-shrink: 0;
-        width: 300px;
-    }
-    .bl_tool {
-        padding: 1.5rem;
-        position: relative;
-        border: 1px solid black;
     }
 
     .bl_canvas_wrapper {
@@ -249,11 +235,30 @@ export default {
         position: relative;
     }
 
-    .bl_canvasWrapper .bl_draggableElems {
+    .bl_tool_wrapper {
+        margin-left: 3rem;
+        flex-shrink: 0;
+        width: 300px;
+    }
+
+    .bl_tool {
+        padding: 1.5rem;
+        position: relative;
+        border: 1px solid black;
+    }
+    .bl_tool_item {
+        display: flex;
+        margin-left: -0.75rem;
+        margin-bottom: -0.75rem;
+        margin-right: -0.75rem;
+    }
+
+    .un_draggableElems {
         position: absolute;
         top: 0;
     }
 
+    // textBox
     .bl_textBox {
         position: absolute;
         top: 0;
@@ -299,7 +304,6 @@ export default {
         height: 5px;
         background-color: blue;
         cursor: ns-resize;
-        opacity: 0.2;
     }
     .bl_textBox_resizerBR.is_active {
         height: 50px;

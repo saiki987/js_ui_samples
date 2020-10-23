@@ -3,6 +3,7 @@ import Home from "@/views/Home.vue"
 import TodoBoard from "@/views/TodoBoard.vue"
 import Gomoku from "@/views/Gomoku.vue"
 import LayoutEditor from "@/views/LayoutEditor.vue"
+import PieceRotation from "@/views/PieceRotation.vue" 
 
 const routes = [
     {
@@ -24,7 +25,12 @@ const routes = [
         path: '/layout_editor',
         name: 'LayoutEditor',
         component: LayoutEditor,
-    }
+    },
+    {
+        path: '/piece_rotation',
+        name: 'PieceRotation',
+        component: PieceRotation,
+    },
 ];
 
 const router = createRouter({

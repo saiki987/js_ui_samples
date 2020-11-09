@@ -3,7 +3,8 @@ import Home from "@/views/Home.vue"
 import TodoBoard from "@/views/TodoBoard.vue"
 import Gomoku from "@/views/Gomoku.vue"
 import LayoutEditor from "@/views/LayoutEditor.vue"
-import PieceRotation from "@/views/PieceRotation.vue" 
+import PieceRotation from "@/views/PieceRotation.vue"
+import SortList from "@/views/SortList.vue"
 
 const routes = [
     {
@@ -30,6 +31,11 @@ const routes = [
         path: '/piece_rotation',
         name: 'PieceRotation',
         component: PieceRotation,
+    },
+    {
+        path: '/sort_list',
+        name: 'SortList',
+        component: SortList,
     },
 ];
 

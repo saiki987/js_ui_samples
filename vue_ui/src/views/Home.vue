@@ -13,6 +13,9 @@
         <p>
             <router-link to="/piece_rotation">ピースの回転</router-link>
         </p>
+        <p>
+            <router-link to="/sort_list">SortList</router-link>
+        </p>
     </div>
 </div>
 </template>
